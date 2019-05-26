@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="node_modules/bootstrap-v4-rtl/dist/css/bootstrap-rtl.min.css">
+    <link rel="stylesheet" href="node_modules/vazir-font/dist/font-face.css">
+    <style>
+        * {
+            font-family: 'Vazir', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <main class="bg-light rtl py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <form id="generateCodeForm">
+                        <div class="form-group">
+                            <label for="carName">نام خودرو</label>
+                            <input name="carName" type="text" class="form-control" id="carName" placeholder="206">
+                        </div>
+                        <div class="form-group">
+                            <label for="color">رنگ</label>
+                            <input name="color" type="text" class="form-control" id="color" placeholder="خاکستری متالیک">
+                        </div>
+                        <div class="form-group">
+                            <label for="firstName">نام</label>
+                            <input name="firstName" type="text" class="form-control" id="firstName" placeholder="اصغر">
+                        </div>
+                        <div class="form-group">
+                            <label for="lastName">نام خانوادگی</label>
+                            <input name="lastName" type="text" class="form-control" id="lastName" placeholder="اکبری">
+                        </div>
+                        <div class="form-group">
+                            <label for="nationalCode">شماره ملی</label>
+                            <input name="nationalCode" type="text" class="form-control" id="nationalCode" placeholder="0720557798">
+                        </div>
+                        <div class="form-group">
+                            <label for="nationalCode2">شماره شناسنامه</label>
+                            <input name="nationalCode2" type="text" class="form-control" id="nationalCode2" placeholder="۰۰۱۷۷۷۷۲۲۲">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">تلفن همراه</label>
+                            <input name="phone" type="text" class="form-control" id="phone" placeholder="09121234567">
+                        </div>
+                        <div class="form-group">
+                            <label for="province">استان</label>
+                            <input name="province" type="text" class="form-control" id="province" placeholder="تهران">
+                        </div>
+                        <div class="form-group">
+                            <label for="city">شهر</label>
+                            <input name="city" type="text" class="form-control" id="city" placeholder="تهران">
+                        </div>
+                        <div class="form-group">
+                            <label for="bank">بانک</label>
+                            <input name="bank" type="text" class="form-control" id="bank" placeholder="حساب سپه">
+                        </div>
+                        <button type="submit" class="btn btn-primary">ساخت کد</button>
+                    </form>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">code:</label>
+                        <textarea style="direction: ltr" class="form-control" id="codeString" rows="10"></textarea>
+                    </div>
+                    <button type="button" id="copyButton" class="btn btn-primary m-1">کپی کردن کد</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="node_modules/jquery/dist/jquery.min.js" ></script>
+    <script src="node_modules/bootstrap-v4-rtl/dist/js/bootstrap.min.js" ></script>
+    <script>
+        var targetFormId = '#generateCodeForm';
+        $(targetFormId).submit(function(event) {
+            event.preventDefault();
+            var values = {};
+            $.each($(targetFormId).serializeArray(), function(i, field) {
+                values[field.name] = field.value;
+            });
+            var script = `var findCarTarget=!1,data=${JSON.stringify(values)},color="خاکستری متالیک";function ssGetCarList(a,t){var c=angular.element($("[ng-controller='app.views.searchcars as vm']")[0]).scope(),n=c.csb+"|"+c.ccc+"|"+(c.cca||"0")+"|"+c.cpd;grecaptcha.ready(function(){grecaptcha.execute(abc.setting.get("SiteKey"),{action:"searchcars"}).then(function(e){$.ajax({url:abc.appPath+"api/services/OnlineSales/searchCar/GetCustomerSearchCar2",type:"GET",data:{SearchParams:n,recap:e}}).then(function(e){c.$apply(function(){c.itemsFound=e.result.gssa.length,c.Cars=e.result.gssa,c.selectedRequest.carBrandSelected=c.ccc,c.selectedRequest.prepaymentSelected=parseInt(c.cpd),e.result.gssa.forEach(function(e){RegExp(a).test(e.sta)&&!findCarTarget&&(console.log("find target successfully"),findCarTarget=!0,c.redirectToNextLevel(e.ssu,e.sbp),$(document).ajaxStop(function(){setTimeout(function(){ssSelectItemInPageStep1()},1e3)}))})}),setTimeout(function(){$("#carGroupSelect").val(c.cca)},100),$("[name=carGroup]").val(c.cca),console.log("req "+t+" done")})})})}var ssIndex=1;function ssMain(){ssGetCarList(data.carName,ssIndex),ssIndex++,findCarTarget||setTimeout(function(){ssMain()},2e3)}function ssSelectItemInPageStep1(){$("[name=GoldenCard]").eq(0).click(),$("[name=Colors]").next().each(function(e,a){RegExp(data.color).test($(a).text())&&$(a).prev().click()}),$("#featuresNextStep").click(),setTimeout(function(){ssSelectItemInPageStep2()},1e3)}function ssSelectItemInPageStep2(){$('[name="firstName"]').val(data.firstName).change(),$('[name="lastName"]').val(data.lastName).change(),$('[name="userName"]').val(data.nationalCode).change(),$('[name="password"]').val(data.nationalCode2).change(),$('[name="cellPhoneNo"]').val(data.phone).change(),$("#directiveProvince").children().each(function(e,a){RegExp(data.province).test($(a).text())&&$("#directiveProvince").val($(a).val()).change()}),$("#directiveCity").children().each(function(e,a){RegExp(data.city).test($(a).text())&&$("#directiveCity").val($(a).val()).change()}),$("#LoginButton").click(),setTimeout(function(){ssSelectItemInPageStep3()},2e3)}function ssSelectItemInPageStep3(){$("#banksList").children().each(function(e,a){RegExp(data.bank).test($(a).find("label").text())&&$(a).click()}),$('[name="que1"]').click(),$('[name="que2"]').click(),$('[name="agrement_checked"]').click()}ssMain();`
+            $('#codeString').val(script);
+        });
+        $('#copyButton').click(function (event) {
+            event.preventDefault();
+            var copyText = document.getElementById("codeString");
+            copyText.select();
+            document.execCommand("copy");
+            alert("Copied the text");
+        })
+    </script>
+</body>
+</html>
